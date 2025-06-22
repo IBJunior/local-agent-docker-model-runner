@@ -11,6 +11,7 @@ import { toArray } from 'rxjs/operators';
 import { ReactAgent } from 'src/agent/implementations/react.agent';
 import { MessageContentDto } from 'src/api/agent/dto/message.dto';
 import { RedisService } from 'src/messaging/redis/redis.service';
+import { ThreadService } from 'src/agent/thread/thread.service';
 
 jest.mock('src/agent/implementations/react.agent');
 
@@ -18,6 +19,7 @@ describe('AgentService', () => {
   let service: AgentService;
   let mockReactAgent: jest.Mocked<ReactAgent>;
   let mockRedisService: jest.Mocked<RedisService>;
+  let mockThreadService: jest.Mocked<ThreadService>;
 
   const messageDto = {
     threadId: 'threadId-12345678',
@@ -56,6 +58,11 @@ describe('AgentService', () => {
       publish: jest.fn(),
     } as any;
 
+    mockThreadService = {
+      // Add any methods used by AgentService here, e.g.:
+      createThreadIfNotExists: jest.fn(),
+    } as any;
+
     const module = await Test.createTestingModule({
       providers: [
         AgentService,
@@ -66,6 +73,10 @@ describe('AgentService', () => {
         {
           provide: RedisService,
           useValue: mockRedisService,
+        },
+        {
+          provide: ThreadService,
+          useValue: mockThreadService,
         },
       ],
     }).compile();

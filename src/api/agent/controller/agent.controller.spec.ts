@@ -1,10 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AgentController } from './agent.controller';
 import { AgentService } from '../service/agent/agent.service';
+import { ThreadService } from 'src/agent/thread/thread.service';
 
 describe('AgentController', () => {
   let controller: AgentController;
-  let agentService: AgentService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -17,11 +17,16 @@ describe('AgentController', () => {
             stream: jest.fn(),
           },
         },
+        {
+          provide: ThreadService,
+          useValue: {
+            getThreads: jest.fn(),
+          },
+        },
       ],
     }).compile();
 
     controller = module.get<AgentController>(AgentController);
-    agentService = module.get<AgentService>(AgentService);
   });
 
   it('should be defined', () => {

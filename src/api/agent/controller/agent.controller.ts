@@ -40,7 +40,7 @@ export class AgentController {
   @ApiResponse({
     status: 200,
     description: 'Returns the chat history',
-    type: [MessageResponseDto], // Adjust this to your actual response type
+    type: [MessageResponseDto],
   })
   async getHistory(
     @Param('threadId') threadId: string,

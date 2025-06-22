@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, Like } from 'typeorm';
+import { Repository } from 'typeorm';
 import { ThreadEntity } from '../entities/thread.entity';
 import { ThreadResponseDto } from 'src/api/agent/dto/thread.response';
 

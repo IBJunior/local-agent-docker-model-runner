@@ -127,11 +127,13 @@ export class AgentService implements IAgentService {
     try {
       const history = await this.agent.getHistory(threadId);
       // console.log('History:', history);
-      return history.map((msg: BaseMessage) => ({
-        id: msg.id || 'unknown', // Ensure id is always present
-        type: msg.getType() as 'human' | 'ai' | 'tool',
-        content: msg.content,
-      }));
+      return history
+        .map((msg: BaseMessage) => ({
+          id: msg.id || 'unknown', // Ensure id is always present
+          type: msg.getType() as 'human' | 'ai' | 'tool',
+          content: msg.content,
+        }))
+        .filter((msg) => msg.content); // Filter out messages without content
     } catch (error) {
       this.logger.error('Error fetching history:', error);
       throw new BadRequestException(
