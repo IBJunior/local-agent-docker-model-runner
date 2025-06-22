@@ -9,6 +9,7 @@ import { IAgentService } from '../iagent.service';
 import { ReactAgent } from 'src/agent/implementations/react.agent';
 import { MessageResponseDto } from '../../dto/message.response.dto';
 import { RedisService } from 'src/messaging/redis/redis.service';
+import { ThreadService } from 'src/agent/thread/thread.service';
 
 @Injectable()
 export class AgentService implements IAgentService {
@@ -17,10 +18,13 @@ export class AgentService implements IAgentService {
   constructor(
     private agent: ReactAgent,
     private redisService: RedisService,
+    private threadService: ThreadService,
   ) {}
 
   async chat(messageDto: MessageDto): Promise<MessageResponseDto> {
     const messages = MessageUtil.toHumanMessages(messageDto);
+    // Ensure the thread exists before sending the message
+    await this.threadService.createThreadIfNotExists(messageDto.threadId);
     const config = {
       configurable: { thread_id: messageDto.threadId },
     };
@@ -71,6 +75,11 @@ export class AgentService implements IAgentService {
     channel: string,
   ) {
     try {
+      // Ensure the thread exists before streaming messages
+      this.logger.log(`Creating thread if not exists for channel: ${channel}`);
+      await this.threadService.createThreadIfNotExists(
+        configurable.configurable?.thread_id || 'default-thread',
+      );
       const streams = await this.agent.stream(
         { messages },
         {

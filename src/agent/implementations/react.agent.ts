@@ -20,6 +20,8 @@ export class ReactAgent {
     this.agent = AgentFactory.createAgent(
       ModelProvider.OPENAI,
       [
+        // Add TavilySearch tool for web search capabilities
+        // You  add more tools as needed
         new TavilySearch({
           maxResults: 5,
           topic: 'general',

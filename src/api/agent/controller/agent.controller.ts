@@ -5,11 +5,16 @@ import { AgentService } from '../service/agent/agent.service';
 import { SseMessage } from '../dto/sse.dto';
 import { MessageDto, SseMessageDto } from '../dto/message.dto';
 import { MessageResponseDto } from '../dto/message.response.dto';
+import { ThreadResponseDto } from '../dto/thread.response';
+import { ThreadService } from 'src/agent/thread/thread.service';
 
 @ApiTags('Agent')
 @Controller('agent')
 export class AgentController {
-  constructor(private agentService: AgentService) {}
+  constructor(
+    private agentService: AgentService,
+    private threadService: ThreadService,
+  ) {}
 
   @Post('chat')
   @ApiOperation({ summary: 'Chat with the agent' })
@@ -41,5 +46,16 @@ export class AgentController {
     @Param('threadId') threadId: string,
   ): Promise<MessageResponseDto[]> {
     return await this.agentService.getHistory(threadId);
+  }
+
+  @Get('threads')
+  @ApiOperation({ summary: 'Get all chat threads' })
+  @ApiResponse({
+    status: 200,
+    description: 'Returns all chat threads',
+    type: [ThreadResponseDto],
+  })
+  async getThreads(): Promise<ThreadResponseDto[]> {
+    return this.threadService.getThreads();
   }
 }
